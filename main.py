@@ -1,27 +1,17 @@
-#!/usr/bin/env python
-# -'''- coding: utf-8 -'''-
- 
 import sys
-from PySide.QtCore import *
 from PySide.QtGui import *
-from PySide.QtDeclarative import *
- 
-# Our main window
-class MainWindow(QDeclarativeView):
- 
-    def __init__(self, parent=None):
-        super(MainWindow, self).__init__(parent)
-        self.setWindowTitle("Main Window")
-        # Renders 'view.qml'
-        self.setSource(QUrl.fromLocalFile('DesktopSudokuGenerator.qml'))
-        # QML resizes to main window
-        self.setResizeMode(QDeclarativeView.SizeRootObjectToView)
- 
+from PySide.QtCore import *
+from ui_mainWindow import *
+
+class MainWindow(QMainWindow, Ui_MainWindow):
+   def __init__(self):
+       super(MainWindow, self).__init__()
+       self.setupUi(self)
+       self.show()
+   
+
 if __name__ == '__main__':
-    # Create the Qt Application
-    app = QApplication(sys.argv)
-    # Create and show the main window
-    window = MainWindow()
-    window.show()
-    # Run the main Qt loop
-    sys.exit(app.exec_())
+   app = QApplication(sys.argv)
+   mainWin = MainWindow()
+   ret = app.exec_()
+   sys.exit( ret )

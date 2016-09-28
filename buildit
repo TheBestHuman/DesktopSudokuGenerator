@@ -3,4 +3,4 @@ pyinstaller -y --clean --windowed --name DesktopSudokuGenerator \
   --exclude-module Tkinter \
   --exclude-module enchant \
   --exclude-module twisted \
-  '/Users/briankimmel/Documents/Projects/UpWork/Fat Dog Publishing - Sudoku/DesktopSudokuGenerator/main.py'
+  'main.py'

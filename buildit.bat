@@ -1,0 +1,1 @@
+pyinstaller -F -y --clean --windowed --name DesktopSudokuGenerator --exclude-module _tkinter --exclude-module Tkinter --exclude-module enchant --exclude-module twisted   main.py

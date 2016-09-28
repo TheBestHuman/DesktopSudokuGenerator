@@ -4,26 +4,6 @@ from PySide.QtCore import *
 from ui_mainWindow import *
 from lib import build_sudoku_pdf
 
-class MainWindow(QMainWindow, Ui_MainWindow):
-	self.sudoku_worker = SudokuWorker()
-	self.sudoku_worker.updateProgress.connect(self.setProgress)
-
-	def __init__(self):
-		super(MainWindow, self).__init__()
-		self.setupUi(self)
-
-		self.pushButton.clicked.connect(self.Go)
-
-		self.show()     
-	
-	def Go(self):
-		self.sudoku_worker.start()
-
-	def setProgress(self, progress):
-		self.pushButton.setText(progress)
-
-
-
 #Inherit from QThread
 class SudokuWorker(QtCore.QThread):
 
@@ -42,6 +22,29 @@ class SudokuWorker(QtCore.QThread):
     def run(self):
         build_sudoku_pdf.GeneratePDF(1, 1, 1, "Easy", False)
         self.updateProgress.emit(1)
+
+class MainWindow(QMainWindow, Ui_MainWindow):
+
+	def __init__(self):
+		super(MainWindow, self).__init__()
+
+		self.sudoku_worker = SudokuWorker()
+		self.sudoku_worker.updateProgress.connect(self.setProgress)
+
+		self.setupUi(self)
+
+		self.pushButton.clicked.connect(self.Go)
+
+		self.show()     
+	
+	def Go(self):
+		self.sudoku_worker.start()
+
+	def setProgress(self, progress):
+		self.pushButton.setText(str(progress))
+
+
+
 
 if __name__ == '__main__':
    	

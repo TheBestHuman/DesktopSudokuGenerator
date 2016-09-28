@@ -18,6 +18,7 @@ import os
 import pickle
 import time
 import math
+import threading
 
 PAGE_WIDTH, PAGE_HEIGHT=defaultPageSize
 
@@ -66,8 +67,9 @@ def generatePage(puzzle, dpuz, page, puzzlenum, difficulty='Any', showFooter=Tru
     #    generateFooter(page)
     #return puz, d
 
-def GeneratePDF(total_puzzles, puzzles_per_page, pages_per_pdf, difficulty, include_solutions, outputdirectory = "."):
+def GeneratePDF(progress, total_puzzles, puzzles_per_page, pages_per_pdf, difficulty, include_solutions, outputdirectory = "."):
 
+    progress.updateProgress.emit(.1)
     output_filename = "Sudoku_" + difficulty + "_" + time.strftime("%Y%m%d-%H%M%S") + ".pdf"
     doc = canvas.Canvas(filename=output_filename, pagesize=defaultPageSize)
 

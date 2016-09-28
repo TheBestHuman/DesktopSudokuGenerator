@@ -20,8 +20,10 @@ class SudokuWorker(QtCore.QThread):
     #A QThread is run by calling it's start() function, which calls this run()
     #function in it's own "thread". 
     def run(self):
-        build_sudoku_pdf.GeneratePDF(1, 1, 1, "Easy", False)
+        build_sudoku_pdf.GeneratePDF(self, 1, 1, 1, "Easy", False)
         self.updateProgress.emit(1)
+
+
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 

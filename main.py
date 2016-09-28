@@ -1,23 +1,27 @@
-import kivy
-kivy.require('1.9.1') # replace with your current kivy version !
-
-from kivy.app import App
-from kivy.uix.label import Label
-from kivy.uix.button import Button
-from kivy.uix.textinput import TextInput
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.widget import Widget
-
-class Root(Widget):
-	pass
-
-class DesktopSudokuGenerator(App):
-    title = 'Desktop Sudoku Generator'
-    
-    def build(self):
-    	return Root()
-        
-
+#!/usr/bin/env python
+# -'''- coding: utf-8 -'''-
+ 
+import sys
+from PySide.QtCore import *
+from PySide.QtGui import *
+from PySide.QtDeclarative import *
+ 
+# Our main window
+class MainWindow(QDeclarativeView):
+ 
+    def __init__(self, parent=None):
+        super(MainWindow, self).__init__(parent)
+        self.setWindowTitle("Main Window")
+        # Renders 'view.qml'
+        self.setSource(QUrl.fromLocalFile('DesktopSudokuGenerator.qml'))
+        # QML resizes to main window
+        self.setResizeMode(QDeclarativeView.SizeRootObjectToView)
+ 
 if __name__ == '__main__':
-    DesktopSudokuGenerator().run()
+    # Create the Qt Application
+    app = QApplication(sys.argv)
+    # Create and show the main window
+    window = MainWindow()
+    window.show()
+    # Run the main Qt loop
+    sys.exit(app.exec_())

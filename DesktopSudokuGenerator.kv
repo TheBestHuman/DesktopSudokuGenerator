@@ -1,54 +1,77 @@
-<Root>:
-	BoxLayout:
-		orientation: 'vertical'
-		BoxLayout:
-			orientation: 'horizontal'
-			Label:
-				size: 500,75
-				size_hint: None,None
-				pos: 0,0
-				text: "Number of puzzles: "
-				color: 0,1,0,1
-				font_size: 40
-			TextInput
-				size: 100,75
-				size_hint: None,None
-				pos: 0,0
-		BoxLayout:
-			orientation: 'horizontal'
-			Label:
-				size: 500,75
-				size_hint: None,None
-				pos: 100,0
-				text: "Puzzles per page"
-				color: 1,0,0,1
-				font_size: 40
-			TextInput
-				size: 100,75
-				size_hint: None,None
-				pos: 0,0
-		BoxLayout:
-			orientation: 'horizontal'
-			Label:
-				size: 500,75
-				size_hint: None,None
-				pos: 100,0
-				text: "Difficulty"
-				color: 1,0,0,1
-				font_size: 40
-			TextInput
-				size: 100,75
-				size_hint: None,None
-				pos: 0,0	
-		BoxLayout:
-			orientation: 'horizontal'
-			Label:
-				size: 500,75
-				size_hint: None,None
-				pos: 100,0
-				text: "Include Solutions"
-				color: 1,0,0,1
-				font_size: 40	
-			TextInput
-				size: 100,75
-				pos: 0,0
+<RootWidget>:
+# this is the rule for your root widget, defining it's look and feel.
+    BoxLayout:
+    	orientation: 'vertical'
+    	BoxLayout:
+    		orientation: 'horizontal'
+	    	Label:
+	    		text: 'Number of puzzles'
+	    	TextInput:
+	    		text: ''
+    	BoxLayout:
+    		orientation: 'horizontal'
+	    	Label:
+	    		text: 'Puzzles per page'
+		    DropDown:
+			    Button:
+			        text: 'Btn0'
+			        size_hint_y: None
+			        height: 44
+			        on_release: root.select('Bouton 0')
+			    Button:
+			        text: 'Btn1'
+			        size_hint_y: None
+			        height: 44
+			        on_release: root.select('Bouton 1')
+			    Button:
+			        text: 'Btn2'
+			        size_hint_y: None
+			        height: 44
+			        on_release: root.select('Bouton 2')
+			    Button:
+			        text: 'Btn3'
+			        size_hint_y: None
+			        height: 44
+			        on_release: root.select('Bouton 3')
+			    Button:
+			        text: 'Btn4'
+			        size_hint_y: None
+			        height: 44
+			        on_release: root.select('Bouton 4')
+	    BoxLayout:
+	    	orientation: 'horizontal'
+	    	Label:
+	    		text: 'Difficulty'
+	    	DropDown:
+	    		Button:
+	    			text: 'Random'
+	    		Button:
+	    			text: 'Easy'
+	    		Button:
+	    			text: 'Medium'
+	    		Button:
+	    			text: 'Hard'
+	    		Button:
+	    			text: 'Very Hard'
+	    BoxLayout:
+	    	orientation: 'horizontal'
+	    	Label:
+	    		text: 'Include solutions'
+	    	Label:
+	    		text: ''
+	    BoxLayout:
+	    	orientation: 'horizontal'
+	    	Label
+	    		text: 'Pages to generate:'
+	    	TextInput:
+	    		text: ''
+	    BoxLayout:
+	    	orientation: 'horizontal'
+	    	Label
+	    		text: ''
+	    	Button
+	    		text: 'GO!'
+    		
+    	
+    		
+    

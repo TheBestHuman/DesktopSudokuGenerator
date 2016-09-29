@@ -60,6 +60,8 @@ class AlreadySetError (ValueError):
     
 class SudokuGrid:
     def __init__ (self, grid=False, verbose=False, group_size=9):
+
+
         self.grid = []
         self.cols = []
         self.rows = []

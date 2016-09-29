@@ -19,6 +19,7 @@ import pickle
 import time
 import math
 import threading
+import random
 
 PAGE_WIDTH, PAGE_HEIGHT=defaultPageSize
 
@@ -120,6 +121,7 @@ def GeneratePDF(progress, total_puzzles, puzzles_per_page, pages_per_pdf, diffic
 	j = 0
 	puzzlelist = []
 	while (j <  total_puzzles):
+		g = sudoku_maker.SudokuGenerator()
 		puzzles = g.make_unique_puzzles(1)
 
 		if puzzles[0][1].value_string() == difficulty :
@@ -150,6 +152,11 @@ def GeneratePDF(progress, total_puzzles, puzzles_per_page, pages_per_pdf, diffic
 			doc.showPage()
 
 			i = i + 1
+
+	if include_solutions:
+		generateSolutions(doc, puzzlelist)
+		doc.showPage()
+
 	doc.save()
 
 	progress.updateProgress.emit(100)

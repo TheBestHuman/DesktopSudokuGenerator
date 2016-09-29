@@ -120,23 +120,16 @@ def GeneratePDF(progress, total_puzzles, puzzles_per_page, pages_per_pdf, diffic
 	g = sudoku_maker.SudokuGenerator()
 	j = 0
 	puzzlelist = []
-
-	g = sudoku_maker.SudokuGenerator()
 	while (j <  total_puzzles):
+		g = sudoku_maker.SudokuGenerator()
 		puzzles = g.make_unique_puzzles(1)
 
-		puzzles = g.make_unique_puzzles(total_puzzles - j)
-
-		for puz, d in puzzles:
-
-			print "[" + d.value_string() + "] [" + difficulty + "]"
-			if d.value_string() == difficulty or difficulty == 'Random' :
-				puzzlelist.append((puz,d))
-				j = j + 1
-				current_progress = current_progress + progress_increment
-				progress.updateProgress.emit(current_progress)
-			if j >= total_puzzles:
-				break
+		print "[" + puzzles[0][1].value_string() + "] [" + difficulty + "]"
+		if puzzles[0][1].value_string() == difficulty or difficulty == 'Random'  :
+			puzzlelist = puzzlelist + puzzles
+			j = j + 1
+			current_progress = current_progress + progress_increment
+			progress.updateProgress.emit(current_progress)
 	i = 1
 
 	if puzzles_per_page == 4:
@@ -168,8 +161,3 @@ def GeneratePDF(progress, total_puzzles, puzzles_per_page, pages_per_pdf, diffic
 	doc.save()
 
 	progress.updateProgress.emit(100)
-	 #   fd, outfile = tempfile.mkstemp(dir=os.path.join(DATA_DIR, d.value_string()))
-	 #   print outfile
-	 #   out = os.fdopen(fd, 'w')
-	 #   pickle.dump(puz, out)
-	 #   out.close()

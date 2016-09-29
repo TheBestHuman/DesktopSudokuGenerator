@@ -7,21 +7,28 @@ from lib import build_sudoku_pdf
 #Inherit from QThread
 class SudokuWorker(QtCore.QThread):
 
-    #This is the signal that will be emitted during the processing.
-    #By including int as an argument, it lets the signal know to expect
-    #an integer argument when emitting.
-    updateProgress = QtCore.Signal(int)
+	total_puzzles = 1
+	puzzles_per_page = 1
+	pages_per_pdf = 1
+	difficulty = 'Easy' 
+	include_solutions = True 
+	outputdirectory = "."
+	
+	#This is the signal that will be emitted during the processing.
+	#By including int as an argument, it lets the signal know to expect
+	#an integer argument when emitting.
+	updateProgress = QtCore.Signal(int)
 
-    #You can do any extra things in this init you need, but for this example
-    #nothing else needs to be done expect call the super's init
-    def __init__(self):
-        QtCore.QThread.__init__(self)
+	#You can do any extra things in this init you need, but for this example
+	#nothing else needs to be done expect call the super's init
+	def __init__(self):
+		QtCore.QThread.__init__(self)
 
-    #A QThread is run by calling it's start() function, which calls this run()
-    #function in it's own "thread". 
-    def run(self):
-        build_sudoku_pdf.GeneratePDF(self, 5, 4, 1, "Easy", True)
-        self.updateProgress.emit(1)
+	#A QThread is run by calling it's start() function, which calls this run()
+	#function in it's own "thread". 
+	def run(self):
+		build_sudoku_pdf.GeneratePDF(self, self.total_puzzles, self.puzzles_per_page, self.pages_per_pdf, self.difficulty, self.include_solutions)
+		self.updateProgress.emit(1)
 
 
 
@@ -47,6 +54,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.progressBar.setValue(0)
 		self.progress_label.setText("Beginning file generation process.")
 		self.progress_label.show()
+
+		#set PDF generation parameters
+		self.sudoku_worker.total_puzzles = int(self.num_puzzles.toPlainText())
+		self.sudoku_worker.puzzles_per_page = (int(self.puzzles_per_page.currentText()))
+		self.sudoku_worker.difficulty = self.difficulty.currentText()
+		self.sudoku_worker.include_solutions = self.include_solutions.isChecked()
+		#run PDF generation on a separate thread
 		self.sudoku_worker.start()
 
 	def setProgress(self, progress):
@@ -59,7 +73,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
 if __name__ == '__main__':
-   	
+	
 
 	app = QApplication(sys.argv)
 	mainWin = MainWindow()

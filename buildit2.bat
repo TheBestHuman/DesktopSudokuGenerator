@@ -1,0 +1,1 @@
+pyinstaller --clean --icon=app.ico --name DesktopSudokuGenerator --noconsole main.py

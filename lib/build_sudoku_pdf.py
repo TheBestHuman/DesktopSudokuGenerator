@@ -20,6 +20,8 @@ import time
 import math
 import threading
 import random
+import timeout_decorator
+import multiprocessing
 
 PAGE_WIDTH, PAGE_HEIGHT=defaultPageSize
 
@@ -69,67 +71,82 @@ def generatePage(puzzle, dpuz, page, puzzlenum, difficulty='Any', showFooter=Tru
 	#return puz, d
 def generateFourUpPage(puzzles, page, puzzlenum, difficulty='Any'):
 
-    inch = 72
-    top = PAGE_HEIGHT
-    left = 36
-    size = (PAGE_WIDTH - inch * 1.5) / 2
-    coords = [
-        (top - inch * 1, left),
-        (top - inch * 1, left + size + inch * .5),
-        (top - inch * 1 - size - inch, left),
-        (top - inch * 1 - size - inch, left + size + inch * .5),
-    ]
+	inch = 72
+	top = PAGE_HEIGHT
+	left = 36
+	size = (PAGE_WIDTH - inch * 1.5) / 2
+	coords = [
+		(top - inch * 1, left),
+		(top - inch * 1, left + size + inch * .5),
+		(top - inch * 1 - size - inch, left),
+		(top - inch * 1 - size - inch, left + size + inch * .5),
+	]
 
-    i = 0
-    for puzzle in puzzles:
-        puz, d = puzzle
-        renderPuzzle(page, puz, coords[i][0], coords[i][1], size, fontSize=16)
-        page.setFont('Times-Bold',12)
-        page.drawString(coords[i][1], coords[i][0] + inch * 0.25, "Puzzle %d (%s, difficulty rating %.02f)" % (puzzlenum + i, d.value_string(), d.value))
-        i += 1
+	i = 0
+	for puzzle in puzzles:
+		puz, d = puzzle
+		renderPuzzle(page, puz, coords[i][0], coords[i][1], size, fontSize=16)
+		page.setFont('Times-Bold',12)
+		page.drawString(coords[i][1], coords[i][0] + inch * 0.25, "Puzzle %d (%s, difficulty rating %.02f)" % (puzzlenum + i, d.value_string(), d.value))
+		i += 1
 
-    return puz, d
 
 def generateSolutions(page, puzzles):
-    col = row = 0
-    i = 0
-    for puz, d in puzzles:
-        i += 1
-        page.setFont('Times-Bold',8)
-        page.drawString(36 + col * 72 * 2.5, PAGE_HEIGHT - 72 - row * 72 * 2.5 + 6, "Puzzle %d (%s, difficulty rating %.02f)" % (i, d.value_string(), d.value))
-        solver = sudoku.SudokuRater(puz.grid,verbose=False, group_size=puz.group_size)
-        solver.solve()
-        renderPuzzle(page, solver, PAGE_HEIGHT - 72 - row * 72 * 2.5, 36 + col * 72 * 2.5, 72 * 2, fontSize=10, thickLine=2)
-        col += 1
-        if col == 3:
-            col = 0
-            row += 1
-            if row == 4:
-                col = row = 0
-                page.showPage()
+	col = row = 0
+	i = 0
+	for puz, d in puzzles:
+		i += 1
+		page.setFont('Times-Bold',8)
+		page.drawString(36 + col * 72 * 2.5, PAGE_HEIGHT - 72 - row * 72 * 2.5 + 6, "Puzzle %d (%s, difficulty rating %.02f)" % (i, d.value_string(), d.value))
+		solver = sudoku.SudokuRater(puz.grid,verbose=False, group_size=puz.group_size)
+		solver.solve()
+		renderPuzzle(page, solver, PAGE_HEIGHT - 72 - row * 72 * 2.5, 36 + col * 72 * 2.5, 72 * 2, fontSize=10, thickLine=2)
+		col += 1
+		if col == 3:
+			col = 0
+			row += 1
+			if row == 4:
+				col = row = 0
+				page.showPage()
+
+def run_unique_puzzles(ns, generator):
+	ns.puzzles = generator.make_unique_puzzles(1)
 
 def GeneratePDF(progress, total_puzzles, puzzles_per_page, pages_per_pdf, difficulty, include_solutions, outputdirectory = "."):
 
 	progress.updateProgress.emit(0)
-	progress_increment = 100/total_puzzles
-	current_progress = 0
+	progress_increment = float(100.0/total_puzzles)
+	current_progress = 0.0
 
 	output_filename = "Sudoku_" + difficulty + "_" + time.strftime("%Y%m%d-%H%M%S") + ".pdf"
 	doc = canvas.Canvas(filename=output_filename, pagesize=defaultPageSize)
 
 	g = sudoku_maker.SudokuGenerator()
 	j = 0
+	manager = multiprocessing.Manager()
+	ns = manager.Namespace()
+	ns.puzzles = []
 	puzzlelist = []
 	while (j <  total_puzzles):
-		g = sudoku_maker.SudokuGenerator()
-		puzzles = g.make_unique_puzzles(1)
+		p = multiprocessing.Process(target=run_unique_puzzles, args=(ns, g))
+		#puzzles = g.make_unique_puzzles(1)
+		p.start()
+		p.join(1)
+		puzzles = ns.puzzles
+		if puzzles == []:
+			print "************ Timed out ************"
+			continue
+		#print puzzles
 
-		print "[" + puzzles[0][1].value_string() + "] [" + difficulty + "]"
+		#print "[" + puzzles[0][1].value_string() + "] [" + difficulty + "]"
 		if puzzles[0][1].value_string() == difficulty or difficulty == 'Random'  :
 			puzzlelist = puzzlelist + puzzles
 			j = j + 1
-			current_progress = current_progress + progress_increment
-			progress.updateProgress.emit(current_progress)
+			print(current_progress)
+			current_progress = float(current_progress + progress_increment)
+			progress.updateProgress.emit(float(current_progress))
+			#Start with a new set of boards
+			g = sudoku_maker.SudokuGenerator()
 	i = 1
 
 	if puzzles_per_page == 4:
@@ -143,9 +160,9 @@ def GeneratePDF(progress, total_puzzles, puzzles_per_page, pages_per_pdf, diffic
 				currentpagelist = []
 
 			i = i + 1
-
-		generateFourUpPage(currentpagelist, doc, i - (len(currentpagelist)))
-		doc.showPage()
+		if len(currentpagelist) > 0:
+			generateFourUpPage(currentpagelist, doc, i - (len(currentpagelist)))
+			doc.showPage()
 	else:
 		for puz, d in puzzlelist:
 

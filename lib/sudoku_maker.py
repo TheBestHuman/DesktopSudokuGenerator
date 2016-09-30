@@ -198,6 +198,7 @@ class SudokuGenerator:
             clues = self.clues - 8
         else:
             clues = 2
+        i = 0
         while 1:
             solver = sudoku.SudokuRater(puz.grid,verbose=False,group_size=self.group_size)
             if solver.has_unique_solution():

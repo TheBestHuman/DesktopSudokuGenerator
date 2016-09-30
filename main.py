@@ -128,7 +128,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
 if __name__ == '__main__':
-	
+	build_sudoku_pdf.freezemultiprocessingsupport()
 
 	app = QApplication(sys.argv)
 	mainWin = MainWindow()

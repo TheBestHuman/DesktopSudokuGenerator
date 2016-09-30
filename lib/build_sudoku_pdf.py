@@ -204,3 +204,6 @@ def GeneratePDF(progress, total_puzzles, puzzles_per_page, pages_per_pdf, diffic
 	doc.save()
 
 	progress.updateProgress.emit(100)
+
+def freezemultiprocessingsupport():
+    multiprocessing.freeze_support()

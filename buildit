@@ -1,4 +1,4 @@
-pyinstaller -y --clean --windowed --name DesktopSudokuGenerator \
+pyinstaller -y --clean --windowed --onefile --noconsole --name DesktopSudokuGenerator --icon=app.icns \
   --exclude-module _tkinter \
   --exclude-module Tkinter \
   --exclude-module enchant \

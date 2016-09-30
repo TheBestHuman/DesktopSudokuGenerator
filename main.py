@@ -63,7 +63,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
 		self.show()     
-	
+
+	def setControls(self, enabled):
+
+		self.go_button.setEnabled(enabled)
+		self.include_solutions.setEnabled(enabled)
+		self.difficulty.setEnabled(enabled)
+		self.puzzles_per_page.setEnabled(enabled)
+		self.num_puzzles.setEnabled(enabled)
+
 	def Go(self):
 		#self.progressBar.show()
 		self.progressBar.setValue(0)
@@ -82,6 +90,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		startTime = time.time()
 		progressIncrement = 0
 		self.running = True
+		self.setControls(False)
 		#run PDF generation on a separate thread
 		self.sudoku_worker.start()
 
@@ -97,17 +106,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 				#print elapsedTime
 
 
-			self.progress_label.setText(str(progress) + "% complete. Estimated time remaining: " + str(int(self.timeLeft / 60)).zfill(2) + ":" + str(int(self.timeLeft % 60)).zfill(2))
+			self.progress_label.setText(str(progress) + "% complete." )
+			#" Estimated time remaining: " + str(int(self.timeLeft / 60)).zfill(2) + ":" + str(int(self.timeLeft % 60)).zfill(2))
 		elif progress > 0:
-			self.progress_label.setText(str(progress) + "% complete. Calculating time remaining...")
+			self.progress_label.setText(str(progress) + "% complete." )
+			#Calculating time remaining...")
 		if progress == 100:
 			self.running = False
 			self.progress_label.setText("File generation complete.")
+			progress = 0
+			self.setControls(True)
 			if(self.killself):
 				print "quitting"
 				QCoreApplication.quit()
 
 		self.progressBar.setValue(progress)
+
 
 	def closeEvent(self, event):
 		if(self.running and self.killself == False):

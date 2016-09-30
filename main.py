@@ -30,7 +30,11 @@ class SudokuWorker(QtCore.QThread):
 	def run(self):
 		build_sudoku_pdf.GeneratePDF(self, self.total_puzzles, self.puzzles_per_page, self.pages_per_pdf, self.difficulty, self.include_solutions)
 		
+	def killmesignal(self):
+		build_sudoku_pdf.stop = True
 
+	def reallykillme(self):
+		self.quit()
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 
@@ -38,6 +42,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	progressIncrement = 0.0
 	running = False
 	timeLeft = 0
+	killself = False
 
 
 	def __init__(self):
@@ -49,17 +54,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.setupUi(self)
 
 		self.go_button.clicked.connect(self.Go)
-		self.progressBar.hide()
-		self.progressBar.setValue(0);
-		self.progress_label.hide()
+
+
+		self.progressBar.setValue(0)
+		self.progress_label.setText("")
 
 		self.show()     
 	
 	def Go(self):
-		self.progressBar.show()
+		#self.progressBar.show()
 		self.progressBar.setValue(0)
 		self.progress_label.setText("Beginning file generation process.")
-		self.progress_label.show()
+		#self.progress_label.show()
 
 		#set PDF generation parameters
 		self.sudoku_worker.total_puzzles = int(self.num_puzzles.toPlainText())
@@ -93,12 +99,29 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			self.progress_label.setText(str(progress) + "% complete. Calculating time remaining...")
 		if progress == 100:
 			self.running = False
-			self.progressBar.hide()
 			self.progress_label.setText("File generation complete.")
+			if(self.killself):
+				print "quitting"
+				QCoreApplication.quit()
 
 		self.progressBar.setValue(progress)
 
-
+	def closeEvent(self, event):
+		if(self.running and self.killself == False):
+			#if a process is running, tell it to save and quit
+			#print "killme signal"
+			self.sudoku_worker.killmesignal()
+			#print "setting killself"
+			self.killself = True
+			self.progress_label.setText("Saving, please wait");
+			event.ignore()
+		else:
+			self.sudoku_worker.reallykillme()
+			event.accept() # let the window close
+			# do stuff
+			#if can_exit:
+			#else:
+			#   event.ignore()
 
 
 if __name__ == '__main__':

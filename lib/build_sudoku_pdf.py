@@ -112,6 +112,8 @@ def generateSolutions(page, puzzles):
 def run_unique_puzzles(ns, generator):
 	ns.puzzles = generator.make_unique_puzzles(1)
 
+stop = False
+
 def GeneratePDF(progress, total_puzzles, puzzles_per_page, pages_per_pdf, difficulty, include_solutions, outputdirectory = "."):
 
 	progress.updateProgress.emit(0)
@@ -128,13 +130,17 @@ def GeneratePDF(progress, total_puzzles, puzzles_per_page, pages_per_pdf, diffic
 	ns.puzzles = []
 	puzzlelist = []
 	while (j <  total_puzzles):
+		#app signalled that it's time to quit
+		if(stop):
+			#print "stopping"
+			break
 		p = multiprocessing.Process(target=run_unique_puzzles, args=(ns, g))
 		#puzzles = g.make_unique_puzzles(1)
 		p.start()
 		p.join(1)
 		puzzles = ns.puzzles
 		if puzzles == []:
-			print "************ Timed out ************"
+			#print "************ Timed out ************"
 			continue
 		#print puzzles
 

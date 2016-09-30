@@ -20,7 +20,6 @@ import time
 import math
 import threading
 import random
-import timeout_decorator
 import multiprocessing
 
 PAGE_WIDTH, PAGE_HEIGHT=defaultPageSize

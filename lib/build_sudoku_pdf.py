@@ -65,7 +65,7 @@ def generatePage(puzzle, dpuz, page, puzzlenum, difficulty='Any', showFooter=Tru
 
 	page.setFont('Times-Bold',12)
 	#page.drawString(left, top - 72 * 1.5, "Puzzle %d (%s, difficulty rating %.02f)" % (puzzlenum, d.value_string(), d.value))
-	page.drawString(left, top - 72 * 1.5, "Puzzle %d" % (puzzlenum))
+	page.drawString(left, top - 72 * 1.5, "%d" % (puzzlenum))
 	#if showFooter:
 	#    generateFooter(page)
 	#return puz, d
@@ -87,7 +87,8 @@ def generateFourUpPage(puzzles, page, puzzlenum, difficulty='Any'):
 		puz, d = puzzle
 		renderPuzzle(page, puz, coords[i][0], coords[i][1], size, fontSize=16)
 		page.setFont('Times-Bold',12)
-		page.drawString(coords[i][1], coords[i][0] + inch * 0.25, "Puzzle %d (%s, difficulty rating %.02f)" % (puzzlenum + i, d.value_string(), d.value))
+		#page.drawString(coords[i][1], coords[i][0] + inch * 0.25, "Puzzle %d (%s, difficulty rating %.02f)" % (puzzlenum + i, d.value_string(), d.value))
+		page.drawString(coords[i][1], coords[i][0] + inch * 0.25, "%d" % (puzzlenum + i))
 		i += 1
 
 
@@ -97,7 +98,8 @@ def generateSolutions(page, puzzles):
 	for puz, d in puzzles:
 		i += 1
 		page.setFont('Times-Bold',8)
-		page.drawString(36 + col * 72 * 2.5, PAGE_HEIGHT - 72 - row * 72 * 2.5 + 6, "Puzzle %d (%s, difficulty rating %.02f)" % (i, d.value_string(), d.value))
+		#page.drawString(36 + col * 72 * 2.5, PAGE_HEIGHT - 72 - row * 72 * 2.5 + 6, "Puzzle %d (%s, difficulty rating %.02f)" % (i, d.value_string(), d.value))
+		page.drawString(36 + col * 72 * 2.5, PAGE_HEIGHT - 72 - row * 72 * 2.5 + 6, "%d" % (i))
 		solver = sudoku.SudokuRater(puz.grid,verbose=False, group_size=puz.group_size)
 		solver.solve()
 		renderPuzzle(page, solver, PAGE_HEIGHT - 72 - row * 72 * 2.5, 36 + col * 72 * 2.5, 72 * 2, fontSize=10, thickLine=2)
@@ -207,4 +209,4 @@ def GeneratePDF(progress, total_puzzles, puzzles_per_page, pages_per_pdf, diffic
 	progress.updateProgress.emit(100)
 
 def freezemultiprocessingsupport():
-    multiprocessing.freeze_support()
+	multiprocessing.freeze_support()

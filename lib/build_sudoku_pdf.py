@@ -64,7 +64,8 @@ def generatePage(puzzle, dpuz, page, puzzlenum, difficulty='Any', showFooter=Tru
 	renderPuzzle(page, puz, top - 72 * 2, left, PAGE_WIDTH - 72, fontSize=24)
 
 	page.setFont('Times-Bold',12)
-	page.drawString(left, top - 72 * 1.5, "Puzzle %d (%s, difficulty rating %.02f)" % (puzzlenum, d.value_string(), d.value))
+	#page.drawString(left, top - 72 * 1.5, "Puzzle %d (%s, difficulty rating %.02f)" % (puzzlenum, d.value_string(), d.value))
+	page.drawString(left, top - 72 * 1.5, "Puzzle %d" % (puzzlenum))
 	#if showFooter:
 	#    generateFooter(page)
 	#return puz, d

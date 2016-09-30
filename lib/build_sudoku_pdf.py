@@ -120,7 +120,28 @@ def GeneratePDF(progress, total_puzzles, puzzles_per_page, pages_per_pdf, diffic
 	progress_increment = float(100.0/total_puzzles)
 	current_progress = 0.0
 
-	output_filename = "Sudoku_" + difficulty + "_" + time.strftime("%Y%m%d-%H%M%S") + ".pdf"
+	if(outputdirectory == "."):
+		# determine if application is a script file or frozen exe
+		if getattr(sys, 'frozen', False):
+			if ".app" in os.path.abspath(sys.executable):
+				#running in mac os as a .app, put files in the home dir	
+				outputdirectory = os.path.join(os.environ['HOME'], 'DesktopSudokuGenerator')
+				if not os.path.exists(outputdirectory):
+					os.makedirs(outputdirectory)
+			else:
+				#windows .exe
+				outputdirectory = os.path.dirname(sys.executable)
+		elif __file__:
+			application_path = os.path.dirname(__file__)
+			outputdirectory = os.path.join(application_path, "..")
+
+		outputdirectory = os.path.join(outputdirectory, "PuzzleOutput")
+		print outputdirectory
+		if not os.path.exists(outputdirectory):
+			os.makedirs(outputdirectory)
+
+	output_filename = os.path.join(outputdirectory, "Sudoku_" + difficulty + "_" + time.strftime("%Y%m%d-%H%M%S") + ".pdf")
+	print output_filename
 	doc = canvas.Canvas(filename=output_filename, pagesize=defaultPageSize)
 
 	g = sudoku_maker.SudokuGenerator()

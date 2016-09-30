@@ -4,6 +4,7 @@ from PySide.QtCore import *
 from ui_mainWindow import *
 from lib import build_sudoku_pdf
 import time
+import os
 
 #Inherit from QThread
 class SudokuWorker(QtCore.QThread):
@@ -58,6 +59,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 		self.progressBar.setValue(0)
 		self.progress_label.setText("")
+
+
 
 		self.show()     
 	

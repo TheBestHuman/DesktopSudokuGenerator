@@ -10,6 +10,7 @@ from reportlab.lib.units import inch
 from reportlab.platypus import *
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.rl_config import defaultPageSize
+from reportlab.lib.pagesizes import letter, A4
 from reportlab.pdfgen import canvas
 import sys
 import random
@@ -22,7 +23,7 @@ import threading
 import random
 import multiprocessing
 
-PAGE_WIDTH, PAGE_HEIGHT=defaultPageSize
+PAGE_WIDTH, PAGE_HEIGHT=letter
 
 
 styles = getSampleStyleSheet()
@@ -144,7 +145,7 @@ def GeneratePDF(progress, total_puzzles, puzzles_per_page, pages_per_pdf, diffic
 
 	output_filename = os.path.join(outputdirectory, "Sudoku_" + difficulty + "_" + time.strftime("%Y%m%d-%H%M%S") + ".pdf")
 	print output_filename
-	doc = canvas.Canvas(filename=output_filename, pagesize=defaultPageSize)
+	doc = canvas.Canvas(filename=output_filename, pagesize=letter)
 
 	g = sudoku_maker.SudokuGenerator()
 	j = 0
